@@ -1,1 +1,6 @@
 rootProject.name = 'flutter_ble_lib'
+sourceControl {
+    gitRepository(URI("https://github.com/resideo/MultiplatformBleAdapter.git")) {
+        producesModule("com.github.Polidea:MultiPlatformBleAdapter")
+    }
+}
