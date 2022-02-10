@@ -44,7 +44,9 @@ public class DiscoveryDelegate extends CallDelegate {
 
             MethodName.GET_DESCRIPTORS_FOR_CHARACTERISTIC,
             MethodName.GET_DESCRIPTORS_FOR_SERVICE,
-            MethodName.GET_DESCRIPTORS_FOR_DEVICE
+            MethodName.GET_DESCRIPTORS_FOR_DEVICE,
+
+            MethodName.REMOVE_BOND
     );
 
     public DiscoveryDelegate(BleAdapter adapter) {
@@ -97,6 +99,12 @@ public class DiscoveryDelegate extends CallDelegate {
                         call.<String>argument(ArgumentKey.CHARACTERISTIC_UUID),
                         result
                 );
+                return;
+            case MethodName.REMOVE_BOND:
+                removeBond(
+                        call.<String>argument(ArgumentKey.DEVICE_IDENTIFIER),
+                        call.<String>argument(ArgumentKey.TRANSACTION_ID),
+                        result);
                 return;
             default:
                 throw new IllegalArgumentException(call.method + " cannot be handled by this delegate");
@@ -235,5 +243,34 @@ public class DiscoveryDelegate extends CallDelegate {
 
     private void failWithError(MethodChannel.Result result, BleError error) {
         result.error(String.valueOf(error.errorCode.code), error.reason, bleErrorJsonConverter.toJson(error));
+    }
+
+    private void removeBond(String deviceId, String transactionId, final MethodChannel.Result result) {
+        final SafeMainThreadResolver resolver = new SafeMainThreadResolver<>(
+                new OnSuccessCallback<Object>() {
+                    @Override
+                    public void onSuccess(Object data) {
+                        result.success(null);
+                    }
+                },
+                new OnErrorCallback() {
+                    @Override
+                    public void onError(BleError error) {
+                        failWithError(result, error);
+                    }
+                });
+
+        adapter.removeBondForDevice(deviceId, transactionId,
+                new OnSuccessCallback<Device>() {
+                    @Override
+                    public void onSuccess(Device data) {
+                        resolver.onSuccess(null);
+                    }
+                }, new OnErrorCallback() {
+                    @Override
+                    public void onError(BleError error) {
+                        resolver.onError(error);
+                    }
+                });
     }
 }

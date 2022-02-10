@@ -41,6 +41,7 @@ public interface MethodName {
     String READ_CHARACTERISTIC_FOR_IDENTIFIER = "readCharacteristicForIdentifier";
     String READ_CHARACTERISTIC_FOR_DEVICE = "readCharacteristicForDevice";
     String READ_CHARACTERISTIC_FOR_SERVICE = "readCharacteristicForService";
+    String REMOVE_BOND = "removeBond";
 
     String WRITE_CHARACTERISTIC_FOR_IDENTIFIER = "writeCharacteristicForIdentifier";
     String WRITE_CHARACTERISTIC_FOR_DEVICE = "writeCharacteristicForDevice";
