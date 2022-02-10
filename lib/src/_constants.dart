@@ -73,6 +73,8 @@ abstract class MethodName {
 
   static const String connectedDevices = "getConnectedDevices";
   static const String knownDevices = "getKnownDevices";
+
+  static const String removeBond = "removeBond";
 }
 
 abstract class ChannelName {

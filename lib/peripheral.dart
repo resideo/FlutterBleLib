@@ -102,6 +102,15 @@ class Peripheral {
         transactionId ?? TransactionIdGenerator.getNextId(),
       );
 
+  /// Android-only: remove existing bond
+  Future<void> removeBond({
+    String? transactionId,
+  }) =>
+      _manager.removeBond(
+        this,
+        transactionId ?? TransactionIdGenerator.getNextId(),
+      );
+
   /// Returns a list of [Service]s of this peripheral.
   ///
   /// Will result in error if discovery was not done during this connection.

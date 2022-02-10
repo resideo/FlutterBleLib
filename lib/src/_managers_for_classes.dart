@@ -37,6 +37,11 @@ abstract class ManagerForPeripheral {
     String transactionId,
   );
 
+  Future<void> removeBond(
+    Peripheral peripheral,
+    String transactionId,
+  );
+
   Future<List<Service>> services(Peripheral peripheral);
 
   Future<List<Characteristic>> characteristics(

@@ -47,8 +47,8 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
             MethodName.GET_DESCRIPTORS_FOR_SERVICE,
             MethodName.GET_DESCRIPTORS_FOR_DEVICE,
 
-            MethodName.CREATE_BOND
-    );
+            MethodName.CREATE_BOND,
+            MethodName.REMOVE_BOND);
 
     public DiscoveryDelegate(BleAdapter adapter) {
         super(supportedMethods);
@@ -68,14 +68,12 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
                 getCharacteristics(
                         call.<String>argument(ArgumentKey.DEVICE_IDENTIFIER),
                         call.<String>argument(ArgumentKey.SERVICE_UUID),
-                        result
-                );
+                        result);
                 return;
             case MethodName.GET_SERVICES:
                 getServices(
                         call.<String>argument(ArgumentKey.DEVICE_IDENTIFIER),
-                        result
-                );
+                        result);
                 return;
             case MethodName.GET_CHARACTERISTICS_FOR_SERVICE:
                 getCharacteristicsForService(call.<Integer>argument(ArgumentKey.SERVICE_IDENTIFIER), result);
@@ -83,26 +81,29 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
             case MethodName.GET_DESCRIPTORS_FOR_CHARACTERISTIC:
                 getDescriptorsForCharacteristic(
                         call.<Integer>argument(ArgumentKey.CHARACTERISTIC_IDENTIFIER),
-                        result
-                );
+                        result);
                 return;
             case MethodName.GET_DESCRIPTORS_FOR_SERVICE:
                 getDescriptorsForService(
                         call.<Integer>argument(ArgumentKey.SERVICE_IDENTIFIER),
                         call.<String>argument(ArgumentKey.CHARACTERISTIC_UUID),
-                        result
-                );
+                        result);
                 return;
             case MethodName.GET_DESCRIPTORS_FOR_DEVICE:
                 getDescriptorsForDevice(
                         call.<String>argument(ArgumentKey.DEVICE_IDENTIFIER),
                         call.<String>argument(ArgumentKey.SERVICE_UUID),
                         call.<String>argument(ArgumentKey.CHARACTERISTIC_UUID),
-                        result
-                );
+                        result);
                 return;
             case MethodName.CREATE_BOND:
                 createBond(
+                        call.<String>argument(ArgumentKey.DEVICE_IDENTIFIER),
+                        call.<String>argument(ArgumentKey.TRANSACTION_ID),
+                        result);
+                return;
+            case MethodName.REMOVE_BOND:
+                removeBond(
                         call.<String>argument(ArgumentKey.DEVICE_IDENTIFIER),
                         call.<String>argument(ArgumentKey.TRANSACTION_ID),
                         result);
@@ -112,7 +113,8 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
         }
     }
 
-    private void discoverAllServicesAndCharacteristics(String deviceId, String transactionId, final MethodChannel.Result result) {
+    private void discoverAllServicesAndCharacteristics(String deviceId, String transactionId,
+            final MethodChannel.Result result) {
         final SafeMainThreadResolver resolver = new SafeMainThreadResolver<>(
                 new OnSuccessCallback<Object>() {
                     @Override
@@ -151,14 +153,12 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
                 characteristicsResponse = new MultiCharacteristicsResponse(
                         characteristics,
                         -1,
-                        null
-                );
+                        null);
             } else {
                 characteristicsResponse = new MultiCharacteristicsResponse(
                         characteristics,
                         characteristics.get(0).getServiceID(),
-                        characteristics.get(0).getServiceUUID()
-                );
+                        characteristics.get(0).getServiceUUID());
             }
 
             String json = multiCharacteristicsResponseJsonConverter.toJson(characteristicsResponse);
@@ -228,9 +228,9 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
     }
 
     private void getDescriptorsForDevice(final String deviceId,
-                                         final String serviceUuid,
-                                         final String characteristicUuid,
-                                         final MethodChannel.Result result) {
+            final String serviceUuid,
+            final String characteristicUuid,
+            final MethodChannel.Result result) {
         try {
             List<Descriptor> descriptors = adapter.descriptorsForDevice(deviceId, serviceUuid, characteristicUuid);
             result.success(multiDescriptorsResponseJsonConverter.toJson(descriptors));
@@ -244,17 +244,17 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
 
     private void createBond(String deviceId, String transactionId, final MethodChannel.Result result) {
         final SafeMainThreadResolver resolver = new SafeMainThreadResolver<>(
-        new OnSuccessCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean data) {
-                result.success(data);
-            }
-        },
-        new OnErrorCallback() {
-            @Override
-            public void onError(BleError error) {
-                failWithError(result, error);
-            }
+                new OnSuccessCallback<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean data) {
+                        result.success(data);
+                    }
+                },
+                new OnErrorCallback() {
+                    @Override
+                    public void onError(BleError error) {
+                        failWithError(result, error);
+                    }
                 });
 
         adapter.createBondForDevice(deviceId, transactionId,
@@ -273,5 +273,34 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
 
     private void failWithError(MethodChannel.Result result, BleError error) {
         result.error(String.valueOf(error.errorCode.code), error.reason, bleErrorJsonConverter.toJson(error));
+    }
+
+    private void removeBond(String deviceId, String transactionId, final MethodChannel.Result result) {
+        final SafeMainThreadResolver resolver = new SafeMainThreadResolver<>(
+                new OnSuccessCallback<Object>() {
+                    @Override
+                    public void onSuccess(Object data) {
+                        result.success(null);
+                    }
+                },
+                new OnErrorCallback() {
+                    @Override
+                    public void onError(BleError error) {
+                        failWithError(result, error);
+                    }
+                });
+
+        adapter.removeBondForDevice(deviceId, transactionId,
+                new OnSuccessCallback<Device>() {
+                    @Override
+                    public void onSuccess(Device data) {
+                        resolver.onSuccess(null);
+                    }
+                }, new OnErrorCallback() {
+                    @Override
+                    public void onError(BleError error) {
+                        resolver.onError(error);
+                    }
+                });
     }
 }

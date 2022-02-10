@@ -190,6 +190,16 @@ class InternalBleManager
       );
 
   @override
+  Future<void> removeBond(
+    Peripheral peripheral,
+    String transactionId,
+  ) =>
+      _bleLib.removeBond(
+        peripheral,
+        transactionId,
+      );
+
+  @override
   Future<List<Characteristic>> characteristicsForService(Service service) =>
       _bleLib.characteristicsForService(service);
 
