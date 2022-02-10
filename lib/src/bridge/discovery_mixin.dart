@@ -19,6 +19,21 @@ mixin DiscoveryMixin on FlutterBLE {
         Future.error(BleError.fromJson(jsonDecode(errorJson.details))));
   }
 
+  Future<void> removeBond(
+    Peripheral peripheral,
+    String transactionId,
+  ) async {
+    if (!Platform.isAndroid) return;
+    await _methodChannel.invokeMethod(
+      MethodName.removeBond,
+      <String, dynamic>{
+        ArgumentName.deviceIdentifier: peripheral.identifier,
+        ArgumentName.transactionId: transactionId,
+      },
+    ).catchError((errorJson) =>
+        Future.error(BleError.fromJson(jsonDecode(errorJson.details))));
+  }
+
   Future<List<Service>> services(Peripheral peripheral) async {
     String jsonString = await _methodChannel.invokeMethod(
       MethodName.services,
