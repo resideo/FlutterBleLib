@@ -200,6 +200,16 @@ class InternalBleManager
       );
 
   @override
+  Future<int> getBondState(
+    Peripheral peripheral,
+    String transactionId,
+  ) =>
+      _bleLib.getBondState(
+        peripheral,
+        transactionId,
+      );
+
+  @override
   Future<List<Characteristic>> characteristicsForService(Service service) =>
       _bleLib.characteristicsForService(service);
 

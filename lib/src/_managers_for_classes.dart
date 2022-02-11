@@ -42,6 +42,11 @@ abstract class ManagerForPeripheral {
     String transactionId,
   );
 
+  Future<int> getBondState(
+    Peripheral peripheral,
+    String transactionId,
+  );
+
   Future<List<Service>> services(Peripheral peripheral);
 
   Future<List<Characteristic>> characteristics(

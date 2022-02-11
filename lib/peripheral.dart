@@ -111,6 +111,15 @@ class Peripheral {
         transactionId ?? TransactionIdGenerator.getNextId(),
       );
 
+  /// Android-only: get bond state
+  Future<int> getBondState({
+    String? transactionId,
+  }) =>
+      _manager.getBondState(
+        this,
+        transactionId ?? TransactionIdGenerator.getNextId(),
+      );
+
   /// Returns a list of [Service]s of this peripheral.
   ///
   /// Will result in error if discovery was not done during this connection.

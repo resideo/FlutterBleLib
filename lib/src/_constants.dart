@@ -75,6 +75,7 @@ abstract class MethodName {
   static const String knownDevices = "getKnownDevices";
 
   static const String removeBond = "removeBond";
+  static const String getBondState = "getBondState";
 }
 
 abstract class ChannelName {

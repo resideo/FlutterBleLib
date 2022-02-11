@@ -48,7 +48,8 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
             MethodName.GET_DESCRIPTORS_FOR_DEVICE,
 
             MethodName.CREATE_BOND,
-            MethodName.REMOVE_BOND);
+            MethodName.REMOVE_BOND,
+            MethodName.GET_BOND_STATE);
 
     public DiscoveryDelegate(BleAdapter adapter) {
         super(supportedMethods);
@@ -104,6 +105,12 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
                 return;
             case MethodName.REMOVE_BOND:
                 removeBond(
+                        call.<String>argument(ArgumentKey.DEVICE_IDENTIFIER),
+                        call.<String>argument(ArgumentKey.TRANSACTION_ID),
+                        result);
+                return;
+            case MethodName.GET_BOND_STATE:
+                getBondState(
                         call.<String>argument(ArgumentKey.DEVICE_IDENTIFIER),
                         call.<String>argument(ArgumentKey.TRANSACTION_ID),
                         result);
@@ -295,6 +302,35 @@ public class DiscoveryDelegate extends CallDelegate implements Serializable {
                     @Override
                     public void onSuccess(Device data) {
                         resolver.onSuccess(null);
+                    }
+                }, new OnErrorCallback() {
+                    @Override
+                    public void onError(BleError error) {
+                        resolver.onError(error);
+                    }
+                });
+    }
+
+    private void getBondState(String deviceId, String transactionId, final MethodChannel.Result result) {
+        final SafeMainThreadResolver<Integer> resolver = new SafeMainThreadResolver<Integer>(
+                new OnSuccessCallback<Integer>() {
+                    @Override
+                    public void onSuccess(Integer data) {
+                        result.success(data);
+                    }
+                },
+                new OnErrorCallback() {
+                    @Override
+                    public void onError(BleError error) {
+                        failWithError(result, error);
+                    }
+                });
+
+        adapter.getBondStateForDevice(deviceId, transactionId,
+                new OnSuccessCallback<Integer>() {
+                    @Override
+                    public void onSuccess(Integer data) {
+                        resolver.onSuccess(data);
                     }
                 }, new OnErrorCallback() {
                     @Override
