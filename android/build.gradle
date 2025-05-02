@@ -1,18 +1,6 @@
 group 'com.polidea.flutter_ble_lib'
 version '2.3.2'
 
-buildscript {
-    repositories {
-        google()
-        jcenter()
-        maven { url "https://jitpack.io" }
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
-    }
-}
-
 rootProject.allprojects {
     repositories {
         google()
@@ -31,14 +19,20 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 35
+    namespace "com.resideo.flutter_ble_lib"
 
     defaultConfig {
-        minSdkVersion 18
+        minSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 

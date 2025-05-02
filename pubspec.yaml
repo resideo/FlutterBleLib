@@ -5,20 +5,19 @@ homepage: https://github.com/resideo/FlutterBleLib
 publish_to: https://rezipub.jfrog.io/artifactory/api/pub/pub-local-lantern
 
 environment:
-  sdk: ">=2.16.1 <3.0.0"
-  # Flutter versions prior to 1.10 did not support the flutter.plugin.platforms map.
-  flutter: ">=1.10.0"
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
 
 dependencies:
   collection: ^1.15.0
-  async: ^2.5.0
-  meta: ^1.3.0
+  async: ^2.6.1
+  meta: ^1.9.1
   flutter:
     sdk: flutter
 
 dev_dependencies:
   mockito: ^5.0.3
-  build_runner: ^1.12.2
+  build_runner: ^2.0.5
   pedantic: ^1.11.0
 
   flutter_test:

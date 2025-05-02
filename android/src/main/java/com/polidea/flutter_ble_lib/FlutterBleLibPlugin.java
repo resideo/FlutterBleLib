@@ -1,9 +1,6 @@
 package com.polidea.flutter_ble_lib;
 
-import android.Manifest;
-import android.app.Application;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -33,13 +30,10 @@ import com.polidea.multiplatformbleadapter.OnEventCallback;
 import com.polidea.multiplatformbleadapter.ScanResult;
 import com.polidea.multiplatformbleadapter.errors.BleError;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
@@ -47,9 +41,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding;
 
 public class FlutterBleLibPlugin implements FlutterPlugin, MethodCallHandler {
 
@@ -73,17 +65,7 @@ public class FlutterBleLibPlugin implements FlutterPlugin, MethodCallHandler {
 
     private List<CallDelegate> delegates = new LinkedList<>();
 
-    public static void registerWith(Registrar registrar) {
-        final FlutterBleLibPlugin plugin = new FlutterBleLibPlugin();
-
-        plugin.onAttachedToEngine(registrar.context(), registrar.messenger());
-    }
-
     public FlutterBleLibPlugin() {}
-
-    private FlutterBleLibPlugin(Context context) {
-        this.context = context;
-    }
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
