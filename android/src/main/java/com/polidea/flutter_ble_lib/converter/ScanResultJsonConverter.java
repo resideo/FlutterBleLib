@@ -48,7 +48,7 @@ public class ScanResultJsonConverter implements JsonConverter<ScanResult> {
             if (value.getAdvertisementData() != null) {
                 serializeAdvertisementData(root, value.getAdvertisementData());
             }
-            root.put(Metadata.IS_CONNECTABLE, JSONObject.NULL);
+            root.put(Metadata.IS_CONNECTABLE, value.getIsConnectable() != null ? value.getIsConnectable() : JSONObject.NULL);
             root.put(Metadata.OVERFLOW_SERVICE_UUIDS, JSONObject.NULL);
             return root.toString();
         } catch (JSONException jsonException) {
