@@ -1,4 +1,4 @@
-[submodule "deps/MultiPlatformBleAdapter"]
-	path = deps/MultiPlatformBleAdapter
+[submodule "deps/MultiplatformBleAdapter"]
+	path = deps/MultiplatformBleAdapter
 	url = git@github.com:resideo/MultiPlatformBleAdapter.git
 	branch = resideo-device-native-sdk
