@@ -19,3 +19,4 @@ example/ios/Podfile.lock
 org.eclipse.buildship.core.prefs
 .project
 .classpath
+/.fvm/flutter_sdk
